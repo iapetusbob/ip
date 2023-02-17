@@ -36,19 +36,6 @@ public class DOOK {
         }
     }
 
-    public void makeDOOK(String filePath) {
-        this.ui = new UI();
-        this.storage = new Storage(filePath);
-        try {
-            this.tasks = new TaskList(storage.load());
-        } catch (DukeException e) { // e should be EmptyTaskListException
-            ui.showLoadingError();
-            this.tasks = new TaskList();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
     /**
      * Runs DOOK.
      */
@@ -80,9 +67,12 @@ public class DOOK {
         if (!input.equals("bye")) {
             try {
                 Command c = Parser.parse(input);
+                storage.write(this.tasks);
                 return c.execute(tasks);
             } catch (DukeException e) {
                 return e.getMessage();
+            } catch (IOException e) {
+                return "lol";
             }
         }
         else {
